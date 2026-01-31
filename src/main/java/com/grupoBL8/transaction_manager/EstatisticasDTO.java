@@ -5,14 +5,14 @@ import lombok.Data;
 @Data
 public class EstatisticasDTO {
 
-    private int count;
+    private Long count;
     private double sum;
     private double avg;
     private double min;
     private double max;
 
 
-   public EstatisticasDTO(int count, double sum, double avg, double min, double max){
+   public EstatisticasDTO(Long count, double sum, double avg, double min, double max){
        this.count = count;
        this.sum = sum;
        this.avg = avg;

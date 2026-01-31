@@ -74,43 +74,54 @@ public class TransacaoService {
       return transacaoMapper.map(transacaoRepository.listarTodos().get(posicao));
     }
 
-
     // Estatisticas
     public EstatisticasDTO estatisticas(){
         // Cria um objeto
         EstatisticasDTO estatisticasDTO = new EstatisticasDTO();
         // Pega o horario Atual
         OffsetDateTime horarioAtual = OffsetDateTime.now();
-        // Pega o horaio atual - 1 min
+        // Pega o horaio atual menos 1 min, caso queira colocar mais tempo, basta aumentar o minutos.
         OffsetDateTime umMinutoAtras = horarioAtual.minusMinutes(1);
 
-        // tem que pegar a lista como um todo uma transferencia completa
-        List<OffsetDateTime> dataHoraLista= transacaoRepository.listarTodos().stream().map(TransacaoModel::getDataHora).toList();
-        for(OffsetDateTime dataHoraAno : dataHoraLista){
-            if(dataHoraAno.getYear() == OffsetDateTime.now().getYear()){
-                
+        // Listas que salvam os dados da TransacaoModel.
+        List<TransacaoModel> listaValoreDataHora = transacaoRepository.listarTodos();
+        List<BigDecimal> valoresListaBigDecimal = new ArrayList<>();
+        List<TransacaoModel> listaValoresEDataValida = new ArrayList<>();
+
+        for(TransacaoModel valoresEData : listaValoreDataHora){
+
+            OffsetDateTime dataHora = valoresEData.getDataHora();
+
+            if((dataHora.isBefore(horarioAtual)) && (dataHora.isAfter(umMinutoAtras) || dataHora.isEqual(umMinutoAtras))) {
+
+                listaValoresEDataValida.add(valoresEData);
+
+                BigDecimal valoresValido = valoresEData.getValor();
+
+                 valoresListaBigDecimal.add(valoresValido);
             }
         }
 
-        // Pega somente os horario presente nas validacoes
-        List<OffsetDateTime> listasDosHorariosValidos = transacaoRepository.listarTodos().stream().map(TransacaoModel::getDataHora).toList();
+        if(listaValoresEDataValida.size() == 0){
 
-        for(OffsetDateTime dataHora : listasDosHorariosValidos){
+            estatisticasDTO.setCount(0L);
+            estatisticasDTO.setSum(0);
+            estatisticasDTO.setAvg(0);
+            estatisticasDTO.setMin(0);
+            estatisticasDTO.setMax(0);
 
-            if((dataHora.isBefore(horarioAtual)) && (dataHora.isAfter(umMinutoAtras) || dataHora.isEqual(umMinutoAtras)) && dataHora.getYear() == OffsetDateTime.now().getYear()){
-                List<TransacaoModel> listaTemp = new ArrayList<>(transacaoRepository.listarTodos());
+        } else {
 
-                List<BigDecimal> valoresListaBigDecimal = listaTemp.stream().map(TransacaoModel::getValor).toList();
-                BigDecimal menorValorBigDecimal = Collections.min(valoresListaBigDecimal);
-                BigDecimal maiorValorBigDecimal = Collections.max(valoresListaBigDecimal);
+            BigDecimal menorValorBigDecimal = Collections.min(valoresListaBigDecimal);
+            BigDecimal maiorValorBigDecimal = Collections.max(valoresListaBigDecimal);
+            estatisticasDTO.setCount(listaValoresEDataValida.stream().count());
 
-                estatisticasDTO.setCount(listaTemp.size());
-                estatisticasDTO.setSum(valoresListaBigDecimal.stream().reduce(BigDecimal.ZERO, BigDecimal::add).doubleValue());
-                estatisticasDTO.setAvg(estatisticasDTO.getSum()/estatisticasDTO.getCount());
-                estatisticasDTO.setMin(menorValorBigDecimal.doubleValue());
-                estatisticasDTO.setMax(maiorValorBigDecimal.doubleValue());
-            }
+            estatisticasDTO.setSum(valoresListaBigDecimal.stream().reduce(BigDecimal.ZERO, BigDecimal::add).doubleValue());
+            estatisticasDTO.setAvg(estatisticasDTO.getSum() / estatisticasDTO.getCount());
+            estatisticasDTO.setMin(menorValorBigDecimal.doubleValue());
+            estatisticasDTO.setMax(maiorValorBigDecimal.doubleValue());
         }
-          return estatisticasDTO;
-        }
+        return estatisticasDTO;
+    }
+
     }
