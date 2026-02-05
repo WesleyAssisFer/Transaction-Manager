@@ -1,10 +1,5 @@
-package com.grupoBL8.transaction_manager.controller;
+package com.grupoBL8.transaction_manager.transacao;
 
-import com.grupoBL8.transaction_manager.EstatisticasDTO;
-import com.grupoBL8.transaction_manager.TransacaoDTO;
-import com.grupoBL8.transaction_manager.model.TransacaoModel;
-import com.grupoBL8.transaction_manager.repository.TransacaoRepository;
-import com.grupoBL8.transaction_manager.service.TransacaoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -64,15 +59,9 @@ public class TransacaoController {
 
     // Deletar
     @DeleteMapping
-    public ResponseEntity<Void> apagarTodasTransacoes(){
+    public ResponseEntity apagarTodasTransacoes(){
         transacaoRepository.limparDados();
         return ResponseEntity.status(HttpStatus.valueOf(200)).build();
-    }
-
-    // Estatisticas
-    @GetMapping("/estatisticas")
-    public ResponseEntity<EstatisticasDTO> count(){
-        return ResponseEntity.ok(transacaoService.estatisticas());
     }
 
 }

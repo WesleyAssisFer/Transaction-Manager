@@ -1,4 +1,4 @@
-package com.grupoBL8.transaction_manager.model;
+package com.grupoBL8.transaction_manager.transacao;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,17 +1,8 @@
-package com.grupoBL8.transaction_manager.service;
+package com.grupoBL8.transaction_manager.transacao;
 
-import com.grupoBL8.transaction_manager.EstatisticasDTO;
-import com.grupoBL8.transaction_manager.TransacaoDTO;
-import com.grupoBL8.transaction_manager.TransacaoMapper;
-import com.grupoBL8.transaction_manager.model.TransacaoModel;
-import com.grupoBL8.transaction_manager.repository.TransacaoRepository;
 import org.springframework.stereotype.Service;
-
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 @Service
 public class TransacaoService {
@@ -75,53 +66,53 @@ public class TransacaoService {
     }
 
     // Estatisticas
-    public EstatisticasDTO estatisticas(){
-        // Cria um objeto
-        EstatisticasDTO estatisticasDTO = new EstatisticasDTO();
-        // Pega o horario Atual
-        OffsetDateTime horarioAtual = OffsetDateTime.now();
-        // Pega o horaio atual menos 1 min, caso queira colocar mais tempo, basta aumentar o minutos.
-        OffsetDateTime umMinutoAtras = horarioAtual.minusMinutes(1);
-
-        // Listas que salvam os dados da TransacaoModel.
-        List<TransacaoModel> listaValoreDataHora = transacaoRepository.listarTodos();
-        List<BigDecimal> valoresListaBigDecimal = new ArrayList<>();
-        List<TransacaoModel> listaValoresEDataValida = new ArrayList<>();
-
-        for(TransacaoModel valoresEData : listaValoreDataHora){
-
-            OffsetDateTime dataHora = valoresEData.getDataHora();
-
-            if((dataHora.isBefore(horarioAtual)) && (dataHora.isAfter(umMinutoAtras) || dataHora.isEqual(umMinutoAtras))) {
-
-                listaValoresEDataValida.add(valoresEData);
-
-                BigDecimal valoresValido = valoresEData.getValor();
-
-                 valoresListaBigDecimal.add(valoresValido);
-            }
-        }
-
-        if(listaValoresEDataValida.size() == 0){
-
-            estatisticasDTO.setCount(0L);
-            estatisticasDTO.setSum(0);
-            estatisticasDTO.setAvg(0);
-            estatisticasDTO.setMin(0);
-            estatisticasDTO.setMax(0);
-
-        } else {
-
-            BigDecimal menorValorBigDecimal = Collections.min(valoresListaBigDecimal);
-            BigDecimal maiorValorBigDecimal = Collections.max(valoresListaBigDecimal);
-            estatisticasDTO.setCount(listaValoresEDataValida.stream().count());
-
-            estatisticasDTO.setSum(valoresListaBigDecimal.stream().reduce(BigDecimal.ZERO, BigDecimal::add).doubleValue());
-            estatisticasDTO.setAvg(estatisticasDTO.getSum() / estatisticasDTO.getCount());
-            estatisticasDTO.setMin(menorValorBigDecimal.doubleValue());
-            estatisticasDTO.setMax(maiorValorBigDecimal.doubleValue());
-        }
-        return estatisticasDTO;
-    }
+//    public EstatisticasDTO estatisticas(){
+//        // Cria um objeto
+//        EstatisticasDTO estatisticasDTO = new EstatisticasDTO();
+//        // Pega o horario Atual
+//        OffsetDateTime horarioAtual = OffsetDateTime.now();
+//        // Pega o horaio atual menos 1 min, caso queira colocar mais tempo, basta aumentar o minutos.
+//        OffsetDateTime umMinutoAtras = horarioAtual.minusMinutes(1);
+//
+//        // Listas que salvam os dados da TransacaoModel.
+//        List<TransacaoModel> listaValoreDataHora = transacaoRepository.listarTodos();
+//        List<BigDecimal> valoresListaBigDecimal = new ArrayList<>();
+//        List<TransacaoModel> listaValoresEDataValida = new ArrayList<>();
+//
+//        for(TransacaoModel valoresEData : listaValoreDataHora){
+//
+//            OffsetDateTime dataHora = valoresEData.getDataHora();
+//
+//            if((dataHora.isBefore(horarioAtual)) && (dataHora.isAfter(umMinutoAtras) || dataHora.isEqual(umMinutoAtras))) {
+//
+//                listaValoresEDataValida.add(valoresEData);
+//
+//                BigDecimal valoresValido = valoresEData.getValor();
+//
+//                 valoresListaBigDecimal.add(valoresValido);
+//            }
+//        }
+//
+//        if(listaValoresEDataValida.size() == 0){
+//
+//            estatisticasDTO.setCount(0L);
+//            estatisticasDTO.setSum(0);
+//            estatisticasDTO.setAvg(0);
+//            estatisticasDTO.setMin(0);
+//            estatisticasDTO.setMax(0);
+//
+//        } else {
+//
+//            BigDecimal menorValorBigDecimal = Collections.min(valoresListaBigDecimal);
+//            BigDecimal maiorValorBigDecimal = Collections.max(valoresListaBigDecimal);
+//            estatisticasDTO.setCount(listaValoresEDataValida.stream().count());
+//
+//            estatisticasDTO.setSum(valoresListaBigDecimal.stream().reduce(BigDecimal.ZERO, BigDecimal::add).doubleValue());
+//            estatisticasDTO.setAvg(estatisticasDTO.getSum() / estatisticasDTO.getCount());
+//            estatisticasDTO.setMin(menorValorBigDecimal.doubleValue());
+//            estatisticasDTO.setMax(maiorValorBigDecimal.doubleValue());
+//        }
+//        return estatisticasDTO;
+//    }
 
     }

@@ -1,9 +1,7 @@
-package com.grupoBL8.transaction_manager.repository;
+package com.grupoBL8.transaction_manager.transacao;
 
-import com.grupoBL8.transaction_manager.TransacaoDTO;
-import com.grupoBL8.transaction_manager.model.TransacaoModel;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.RequestBody;
+
 
 import java.util.ArrayList;
 import java.util.List;

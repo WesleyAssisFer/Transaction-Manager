@@ -1,6 +1,5 @@
-package com.grupoBL8.transaction_manager;
+package com.grupoBL8.transaction_manager.transacao;
 
-import com.grupoBL8.transaction_manager.model.TransacaoModel;
 import org.springframework.stereotype.Component;
 
 @Component
