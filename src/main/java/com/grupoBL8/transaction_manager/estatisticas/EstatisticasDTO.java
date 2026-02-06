@@ -6,13 +6,13 @@ import lombok.Data;
 public class EstatisticasDTO {
 
     private Long count;
-    private double sum;
-    private double avg;
-    private double min;
-    private double max;
+    private Double sum;
+    private Double avg;
+    private Double min;
+    private Double max;
 
 
-   public EstatisticasDTO(Long count, double sum, double avg, double min, double max){
+   public EstatisticasDTO(Long count, Double sum, Double avg, Double min, Double max){
        this.count = count;
        this.sum = sum;
        this.avg = avg;

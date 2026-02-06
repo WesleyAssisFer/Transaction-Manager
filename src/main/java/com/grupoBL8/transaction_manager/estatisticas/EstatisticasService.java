@@ -2,6 +2,7 @@ package com.grupoBL8.transaction_manager.estatisticas;
 
 import com.grupoBL8.transaction_manager.transacao.TransacaoModel;
 import com.grupoBL8.transaction_manager.transacao.TransacaoRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@Slf4j
 @Service
 public class EstatisticasService {
 
@@ -21,50 +23,44 @@ public class EstatisticasService {
     }
 
     public EstatisticasDTO estatistica(){
+        log.info("Iniciando calculo de estatisticas");
         EstatisticasDTO estatisticasDTO = new EstatisticasDTO();
 
-        // Listas que salvam os dados da TransacaoModel.
-        List<TransacaoModel> listaValoreDataHora = transacaoRepository.listarTodos();
-        List<BigDecimal> valoresListaBigDecimal = new ArrayList<>();
-        List<TransacaoModel> listaValoresEDataValida = new ArrayList<>();
-
         // Configurando os Segundos para retonar as estatisticas
-
         OffsetDateTime horarioAtual = OffsetDateTime.now();
         OffsetDateTime segundosConsulda = estatisticaProperties.segundosRetorno();
 
-        for(TransacaoModel valoresEData : listaValoreDataHora){
+        // Listas que salvam os dados da TransacaoModel.
+        List<TransacaoModel> transacaos = transacaoRepository.listarTodos();
 
-            OffsetDateTime dataHora = valoresEData.getDataHora();
+        List<BigDecimal> valoresValidos = new ArrayList<>();
+
+        for(TransacaoModel transacao : transacaos){
+
+            OffsetDateTime dataHora = transacao.getDataHora();
 
             if((dataHora.isBefore(horarioAtual)) && (dataHora.isAfter(segundosConsulda) || dataHora.isEqual(segundosConsulda))) {
 
-                listaValoresEDataValida.add(valoresEData);
-
-                BigDecimal valoresValido = valoresEData.getValor();
-
-                valoresListaBigDecimal.add(valoresValido);
+                valoresValidos.add(transacao.getValor());
             }
         }
 
-        if(listaValoresEDataValida.size() == 0){
-
-            estatisticasDTO.setCount(0L);
-            estatisticasDTO.setSum(0);
-            estatisticasDTO.setAvg(0);
-            estatisticasDTO.setMin(0);
-            estatisticasDTO.setMax(0);
+        if(valoresValidos.isEmpty()){
+            log.info("Nenhuma transação encontrada no intervalo informado");
+            return new EstatisticasDTO(0L,0.0,0.0,0.0,0.0);
 
         } else {
 
-            BigDecimal menorValorBigDecimal = Collections.min(valoresListaBigDecimal);
-            BigDecimal maiorValorBigDecimal = Collections.max(valoresListaBigDecimal);
-            estatisticasDTO.setCount(listaValoresEDataValida.stream().count());
+            BigDecimal menorValorBigDecimal = Collections.min(valoresValidos);
+            BigDecimal maiorValorBigDecimal = Collections.max(valoresValidos);
+            estatisticasDTO.setCount((long) valoresValidos.size());
 
-            estatisticasDTO.setSum(valoresListaBigDecimal.stream().reduce(BigDecimal.ZERO, BigDecimal::add).doubleValue());
+            estatisticasDTO.setSum(valoresValidos.stream().reduce(BigDecimal.ZERO, BigDecimal::add).doubleValue());
             estatisticasDTO.setAvg(estatisticasDTO.getSum() / estatisticasDTO.getCount());
             estatisticasDTO.setMin(menorValorBigDecimal.doubleValue());
             estatisticasDTO.setMax(maiorValorBigDecimal.doubleValue());
+
+            log.info("Estatisticas calculada com sucesso | totalTransacao: {}", estatisticasDTO.getCount());
         }
         return estatisticasDTO;
     }
