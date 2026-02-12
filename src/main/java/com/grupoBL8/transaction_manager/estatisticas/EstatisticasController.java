@@ -1,5 +1,6 @@
 package com.grupoBL8.transaction_manager.estatisticas;
 
+import com.grupoBL8.transaction_manager.Docs.EstatisticaControllerDoc;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequestMapping("estatistica")
-public class EstatisticasController {
+public class EstatisticasController implements EstatisticaControllerDoc {
 
     private final EstatisticasService estatisticasService;
 
