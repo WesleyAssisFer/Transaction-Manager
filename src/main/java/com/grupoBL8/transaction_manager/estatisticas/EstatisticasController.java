@@ -29,8 +29,8 @@ public class EstatisticasController {
         catch (IllegalArgumentException e){
             log.warn("GET /estatisticas - erro de regra de negócio: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-
-        } catch (Exception e){
+        }
+        catch (Exception e){
             log.warn("GET/ estatisticas - erro inesperado: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro interno");
         }
