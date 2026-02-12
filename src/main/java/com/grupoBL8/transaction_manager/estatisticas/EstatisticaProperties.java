@@ -1,26 +1,26 @@
 package com.grupoBL8.transaction_manager.estatisticas;
 
-import lombok.extern.slf4j.Slf4j;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import java.time.OffsetDateTime;
+import org.springframework.validation.annotation.Validated;
 
+import java.time.OffsetDateTime;
+@Validated
 @ConfigurationProperties(prefix = "estatistica")
-public record EstatisticaProperties(Integer segundos) {
+public record EstatisticaProperties(
+        @NotNull(message = "Valor da mensagm vazio")
+        @Positive(message = "Valor tem que maior que zero")
+        Integer segundos) {
 
     public OffsetDateTime segundosRetorno(){
 
     // Pega o horario Atual
     OffsetDateTime horarioAtual = OffsetDateTime.now();
 
-    // Pega o horaio atual menos segundos escolhido, caso queira colocar mais tempo, basta aumentar os segundos.
-    if(segundos < 0){
-       throw new IllegalArgumentException("Erro: Valor de busca por minunto inválido");
-    }
-
     // Ocorre a subtracao da hora.
-    OffsetDateTime horarioDeRetorno = horarioAtual.minusSeconds(segundos);
+    OffsetDateTime horarioRetornoEstatistcas = horarioAtual.minusSeconds(segundos);
 
-    return horarioDeRetorno;
+    return horarioRetornoEstatistcas;
     }
-
 }

@@ -46,10 +46,11 @@ public class EstatisticasService {
         }
 
         if(valoresValidos.isEmpty()){
-            log.info("Nenhuma transação encontrada no intervalo informado");
+            log.info("Nenhuma transação encontrada no intervalo informado nos ultimos {} segundos", estatisticaProperties.segundos());
             return new EstatisticasDTO(0L,0.0,0.0,0.0,0.0);
 
         } else {
+            log.info("calculando as transacaoes nos ultimos: {}",estatisticaProperties.segundos());
 
             BigDecimal menorValorBigDecimal = Collections.min(valoresValidos);
             BigDecimal maiorValorBigDecimal = Collections.max(valoresValidos);
